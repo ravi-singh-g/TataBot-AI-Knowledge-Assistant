@@ -150,14 +150,14 @@ TataBot-AI-Knowledge-Assistant/
 
 ## 💬 Chat Interface
 
-![Chatbot](<img width="1920" height="1080" alt="New Operator   Maintenance Technician Response" src="https://github.com/user-attachments/assets/f5a88d56-6dda-45a0-b838-0ede2bfb8035" />
-)
+![Chatbot]("<img width="1920" height="1080" alt="New Operator   Maintenance Technician Response" src="https://github.com/user-attachments/assets/f5a88d56-6dda-45a0-b838-0ede2bfb8035" />
+")
 
 ---
 
 ## 👥 Role Selection
 
-![Persona](<img width="1920" height="1080" alt="Shopfloor   L D Manager Response" src="https://github.com/user-attachments/assets/04e62ba6-a072-4fa2-a8e2-2adf73d3f6e1" />
+![Persona](<img width="1920" height="1080" alt="User Personas" src="https://github.com/user-attachments/assets/b5e95f20-0905-4e2e-b7c7-d396a8739e04" />
 )
 
 ---
