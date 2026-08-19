@@ -157,15 +157,15 @@ TataBot-AI-Knowledge-Assistant/
 
 ## 👥 Role Selection
 
-![Persona](<img width="1920" height="1080" alt="User Personas" src="https://github.com/user-attachments/assets/b5e95f20-0905-4e2e-b7c7-d396a8739e04" />
-)
+![Persona]("<img width="1920" height="1080" alt="User Personas" src="https://github.com/user-attachments/assets/b5e95f20-0905-4e2e-b7c7-d396a8739e04" />
+")
 
 ---
 
 ## 🏗️ System Architecture
 
-![Architecture](<img width="700" height="769" alt="System Architecture" src="https://github.com/user-attachments/assets/704a1a9b-bb5f-4685-8e2f-3cfeb58c4cad" />
-)
+![Architecture]("<img width="700" height="769" alt="System Architecture" src="https://github.com/user-attachments/assets/704a1a9b-bb5f-4685-8e2f-3cfeb58c4cad" />
+")
 
 ---
 
