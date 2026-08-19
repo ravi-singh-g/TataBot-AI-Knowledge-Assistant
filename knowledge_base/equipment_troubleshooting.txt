@@ -1,0 +1,34 @@
+TATA STEEL EQUIPMENT TROUBLESHOOTING GUIDE
+
+ERROR CODE E-47 - MOTOR OVERHEATING:
+Symptoms: Motor temperature above safe limit
+Actions:
+1. Stop the machine safely and immediately
+2. Check motor temperature readings
+3. Inspect cooling fans and ventilation system
+4. Verify power supply conditions
+5. Refer to Rolling Mill SOP Section 4.2
+6. If issue persists, contact maintenance supervisor
+Prevention: Check cooling system before every shift
+
+ERROR CODE E-12 - HYDRAULIC PRESSURE LOW:
+Symptoms: Pressure gauge reading below minimum
+Actions:
+1. Stop operations immediately
+2. Check hydraulic fluid levels
+3. Inspect system for visible leaks
+4. Do not restart until pressure is restored
+5. Contact maintenance supervisor immediately
+
+CONVEYOR SYSTEM MAINTENANCE:
+Before any maintenance work:
+- Always follow complete LOTO procedure
+- Never work on moving conveyor
+- Inspect belt alignment weekly
+- Lubricate bearings as per schedule
+
+ROLLING MILL MAINTENANCE:
+- Daily: Check roll alignment and cooling water flow
+- Weekly: Inspect roll surface for cracks or wear
+- Monthly: Full inspection of drive system
+- Refer to Rolling Mill Maintenance Manual v3.2
