@@ -143,25 +143,29 @@ TataBot-AI-Knowledge-Assistant/
 
 ## 🏠 Home Page
 
-![Home](screenshots/home.png)
+![Home]("<img width="1920" height="1080" alt="TataBot Home" src="https://github.com/user-attachments/assets/6bccbd58-9c04-4aa4-bd51-12bb5a9653e2" />
+")
 
 ---
 
 ## 💬 Chat Interface
 
-![Chatbot](screenshots/chatbot.png)
+![Chatbot](<img width="1920" height="1080" alt="New Operator   Maintenance Technician Response" src="https://github.com/user-attachments/assets/f5a88d56-6dda-45a0-b838-0ede2bfb8035" />
+)
 
 ---
 
 ## 👥 Role Selection
 
-![Persona](screenshots/persona.png)
+![Persona](<img width="1920" height="1080" alt="Shopfloor   L D Manager Response" src="https://github.com/user-attachments/assets/04e62ba6-a072-4fa2-a8e2-2adf73d3f6e1" />
+)
 
 ---
 
 ## 🏗️ System Architecture
 
-![Architecture](screenshots/architecture.png)
+![Architecture](<img width="700" height="769" alt="System Architecture" src="https://github.com/user-attachments/assets/704a1a9b-bb5f-4685-8e2f-3cfeb58c4cad" />
+)
 
 ---
 
