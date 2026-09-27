@@ -2,33 +2,57 @@ from groq import Groq
 import os
 
 # ── Configuration ────────────────────────────────────────────────
-API_KEY = ""  # Your gsk_... key
+# ⚠️ Never hardcode API keys. Use environment variables:
+#    export GROQ_API_KEY="gsk_..."   (Linux/Mac)
+#    set GROQ_API_KEY=gsk_...        (Windows CMD)
+API_KEY = os.environ.get("GROQ_API_KEY", "")
+MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
+
+if not API_KEY:
+    print("❌ GROQ_API_KEY environment variable not set!")
+    print("   Run: export GROQ_API_KEY='your_key_here'")
+    raise SystemExit(1)
 
 client = Groq(api_key=API_KEY)
 
 # ── Load Real Documents ──────────────────────────────────────────
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def find_knowledge_folder():
+    candidates = [
+        os.path.join(BASE_DIR, "api", "knowledge_base"),  # Vercel layout
+        os.path.join(BASE_DIR, "knowledge_base"),         # local layout
+        "knowledge_base",                                 # cwd
+    ]
+    for path in candidates:
+        if os.path.isdir(path):
+            return path
+    return None
+
+
 def load_knowledge_base():
     knowledge = ""
-    folder = "knowledge_base"
-    
-    if not os.path.exists(folder):
+    folder = find_knowledge_folder()
+
+    if not folder:
         print("❌ knowledge_base folder not found!")
         return ""
-    
+
     files_loaded = []
-    for filename in os.listdir(folder):
+    for filename in sorted(os.listdir(folder)):
         if filename.endswith(".txt"):
             filepath = os.path.join(folder, filename)
             with open(filepath, "r", encoding="utf-8") as f:
                 content = f.read()
                 knowledge += f"\n\n=== {filename.upper()} ===\n{content}"
                 files_loaded.append(filename)
-    
+
     print(f"✅ Loaded {len(files_loaded)} documents:")
     for f in files_loaded:
         print(f"   📄 {f}")
     print()
-    
+
     return knowledge
 
 # ── System Prompt ────────────────────────────────────────────────
@@ -57,22 +81,22 @@ HERE ARE YOUR KNOWLEDGE BASE DOCUMENTS:
 # ── Role Detection ───────────────────────────────────────────────
 def detect_role(user_input):
     text = user_input.lower()
-    
-    if any(word in text for word in ["new operator", "new joiner", 
-                                      "first day", "just joined", 
+
+    if any(word in text for word in ["new operator", "new joiner",
+                                      "first day", "just joined",
                                       "what should i learn"]):
         return "New Operator"
-    
-    elif any(word in text for word in ["error code", "machine", 
+
+    elif any(word in text for word in ["error code", "machine",
                                         "maintenance", "troubleshoot",
                                         "not working", "repair"]):
         return "Maintenance Technician"
-    
-    elif any(word in text for word in ["training status", "report", 
+
+    elif any(word in text for word in ["training status", "report",
                                         "department", "completion",
                                         "workforce", "team"]):
         return "L&D Manager"
-    
+
     else:
         return "Shopfloor Employee"
 
@@ -82,21 +106,21 @@ def run_tatabot():
     print("   TATABOT — AI Knowledge Assistant | Tata Steel")
     print("   Powered by Real L&D Documents")
     print("=" * 55)
-    
+
     # Load documents at startup
     knowledge = load_knowledge_base()
-    
+
     if not knowledge:
         print("❌ No documents found. Please check knowledge_base folder.")
         return
-    
+
     system_prompt = build_system_prompt(knowledge)
-    
+
     # Chat history
     chat_history = [
         {"role": "system", "content": system_prompt}
     ]
-    
+
     print("Type your question and press Enter.")
     print("Type 'exit' to quit.\n")
 
@@ -112,10 +136,10 @@ def run_tatabot():
 
         # Detect user role
         role = detect_role(user_input)
-        
+
         # Add role context to message
         enhanced_input = f"[User type detected: {role}]\n{user_input}"
-        
+
         chat_history.append({
             "role": "user",
             "content": enhanced_input
@@ -123,7 +147,7 @@ def run_tatabot():
 
         try:
             response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model=MODEL,
                 messages=chat_history,
                 max_tokens=500,
                 temperature=0.7

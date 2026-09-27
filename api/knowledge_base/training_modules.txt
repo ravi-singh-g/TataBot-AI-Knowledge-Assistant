@@ -1,0 +1,41 @@
+TATA STEEL TRAINING MODULES
+
+NEW OPERATOR LEARNING PATH (in order):
+Module 1: Safety Induction
+- PPE rules and correct usage
+- Emergency procedures and evacuation
+- Workplace hazard awareness
+
+Module 2: Equipment Familiarization
+- Understanding your specific workstation
+- Machine components and their functions
+- Basic startup and shutdown procedures
+
+Module 3: Hazard Identification
+- Recognizing workplace risks
+- Reporting hazards to supervisor
+- Near-miss reporting procedure
+
+Module 4: Emergency Response Procedures
+- Fire emergency response
+- Chemical spill response
+- Medical emergency response
+
+Module 5: Basic Equipment Operations
+- Safe operating procedures
+- Pre-shift inspection checklist
+- Common errors and how to handle them
+
+Module 6: Daily Operational Checklist
+- Tasks before starting shift
+- Tasks during shift
+- Tasks at end of shift
+
+TRAINING STATUS (June 2026):
+- Total operators: 120
+- Completed safety training: 98 (82%)
+- Pending training: 22 operators
+- Departments needing support:
+  * Blast Furnace Operations
+  * Maintenance Team A
+  * New Operator Cohort

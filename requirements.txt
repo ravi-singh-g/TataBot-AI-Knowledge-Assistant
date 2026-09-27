@@ -1,2 +1,2 @@
-flask
-groq
+flask>=3.0
+groq>=0.13
