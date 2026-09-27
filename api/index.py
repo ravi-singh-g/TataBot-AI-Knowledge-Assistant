@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify
 from groq import Groq
 import os
 
@@ -90,49 +90,169 @@ def detect_role(text):
     else:
         return "Shopfloor Employee"
 
-# ── HTML Interface ───────────────────────────────────────────────
+# ── HTML Interface — Modern Dark + Glass ─────────────────────────
 HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TataBot</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Segoe UI',sans-serif; background:#0D1B2A; color:white; display:flex; flex-direction:column; height:100vh; }
-.header { background:#1B4F72; padding:16px 24px; display:flex; align-items:center; gap:14px; border-bottom:3px solid #F39C12; }
-.logo { width:44px; height:44px; background:#F39C12; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:bold; color:#0D1B2A; }
-.header h1 { font-size:18px; }
-.header p { font-size:12px; color:#AED6F1; margin-top:2px; }
-.status { margin-left:auto; font-size:12px; color:#2ECC71; }
-.chat { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:14px; }
-.welcome { background:#1B3A5C; border:1px solid #2E86C1; border-radius:10px; padding:16px; text-align:center; }
-.welcome h2 { color:#F39C12; margin-bottom:6px; font-size:15px; }
-.welcome p { color:#AED6F1; font-size:13px; line-height:1.5; }
-.msg { display:flex; gap:10px; max-width:85%; }
+html, body { height:100%; }
+body {
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  background:linear-gradient(135deg,#0b1020 0%,#141b33 55%,#0e1528 100%);
+  color:#fff; display:flex; flex-direction:column; height:100vh; position:relative; overflow:hidden;
+}
+body::before {
+  content:""; position:absolute; width:420px; height:420px; border-radius:50%;
+  background:radial-gradient(circle,rgba(99,102,241,.30),transparent 70%);
+  top:-140px; right:-120px; pointer-events:none;
+}
+body::after {
+  content:""; position:absolute; width:380px; height:380px; border-radius:50%;
+  background:radial-gradient(circle,rgba(34,211,238,.18),transparent 70%);
+  bottom:-140px; left:-110px; pointer-events:none;
+}
+
+.header {
+  background:rgba(255,255,255,.05); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  padding:14px 22px; display:flex; align-items:center; gap:14px;
+  border-bottom:1px solid rgba(255,255,255,.09); position:relative; z-index:5;
+}
+.logo {
+  width:44px; height:44px; border-radius:13px;
+  background:linear-gradient(135deg,#6366f1,#22d3ee);
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px; font-weight:800; color:#fff;
+  box-shadow:0 6px 20px rgba(99,102,241,.45);
+}
+.header h1 { font-size:18px; font-weight:700; letter-spacing:.2px; }
+.header p { font-size:11.5px; color:#94a3b8; margin-top:2px; }
+.status { margin-left:auto; font-size:11.5px; color:#34d399; white-space:nowrap; }
+.clearbtn {
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
+  color:#a5b4fc; padding:8px 14px; border-radius:11px; font-size:12px;
+  cursor:pointer; transition:.2s;
+}
+.clearbtn:hover { background:rgba(99,102,241,.25); color:#fff; border-color:rgba(99,102,241,.5); }
+
+.chat {
+  flex:1; overflow-y:auto; padding:22px; display:flex; flex-direction:column; gap:14px;
+  position:relative; z-index:1;
+}
+.chat::-webkit-scrollbar { width:5px; }
+.chat::-webkit-scrollbar-thumb { background:rgba(99,102,241,.55); border-radius:3px; }
+.chat::-webkit-scrollbar-track { background:transparent; }
+
+.welcome {
+  background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.12);
+  border-radius:18px; padding:26px 22px; text-align:center; margin:6px auto;
+  max-width:520px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  box-shadow:0 10px 40px rgba(0,0,0,.25);
+}
+.welcome .wicon {
+  width:58px; height:58px; margin:0 auto 12px; border-radius:17px;
+  background:linear-gradient(135deg,#6366f1,#22d3ee);
+  display:flex; align-items:center; justify-content:center; font-size:24px;
+  box-shadow:0 8px 26px rgba(99,102,241,.5);
+}
+.welcome h2 {
+  font-size:17px; margin-bottom:8px;
+  background:linear-gradient(90deg,#a5b4fc,#22d3ee);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.welcome p { color:#94a3b8; font-size:13px; line-height:1.65; }
+.welcome .chips { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
+.welcome .chip {
+  background:rgba(99,102,241,.16); border:1px solid rgba(99,102,241,.35);
+  color:#a5b4fc; font-size:11px; padding:6px 12px; border-radius:20px;
+}
+
+.msg { display:flex; gap:10px; max-width:82%; animation:pop .25s ease; }
+@keyframes pop { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 .msg.user { align-self:flex-end; flex-direction:row-reverse; }
 .msg.bot { align-self:flex-start; }
-.av { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold; flex-shrink:0; }
-.user .av { background:#2E86C1; color:white; }
-.bot .av { background:#F39C12; color:#0D1B2A; }
-.bub { padding:11px 15px; border-radius:10px; font-size:13.5px; line-height:1.6; }
-.user .bub { background:#2E86C1; color:white; border-bottom-right-radius:3px; }
-.bot .bub { background:#1B3A5C; color:#F0F4F8; border:1px solid #2E86C1; border-bottom-left-radius:3px; }
-.roletag { font-size:10px; color:#F39C12; font-weight:bold; margin-bottom:4px; text-transform:uppercase; }
-.quick { display:flex; flex-wrap:wrap; gap:8px; padding:8px 20px; }
-.qbtn { background:#1B3A5C; border:1px solid #2E86C1; color:#AED6F1; padding:6px 12px; border-radius:20px; font-size:11px; cursor:pointer; }
-.qbtn:hover { background:#2E86C1; color:white; }
-.inputrow { background:#1B3A5C; padding:14px 20px; border-top:1px solid #2E86C1; display:flex; gap:10px; }
-.inputrow input { flex:1; background:#0D1B2A; border:1px solid #2E86C1; border-radius:8px; padding:11px 14px; color:white; font-size:14px; outline:none; }
-.inputrow input:focus { border-color:#F39C12; }
-.sendbtn { background:#F39C12; color:#0D1B2A; border:none; border-radius:8px; padding:11px 20px; font-size:14px; font-weight:bold; cursor:pointer; }
-.sendbtn:hover { background:#E67E22; }
-.typing { display:flex; gap:4px; padding:8px 12px; align-items:center; }
-.typing span { width:7px; height:7px; background:#AED6F1; border-radius:50%; animation:bounce 1.2s infinite; }
+.av {
+  width:34px; height:34px; border-radius:11px; display:flex; align-items:center;
+  justify-content:center; font-size:10.5px; font-weight:800; flex-shrink:0;
+}
+.user .av { background:#4f46e5; color:#fff; }
+.bot .av { background:linear-gradient(135deg,#6366f1,#22d3ee); color:#fff; }
+.bubblewrap { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.bub { padding:11px 15px; border-radius:16px; font-size:13.5px; line-height:1.65; position:relative; }
+.user .bub {
+  background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff;
+  border-bottom-right-radius:5px; box-shadow:0 6px 18px rgba(79,70,229,.35);
+}
+.bot .bub {
+  background:rgba(255,255,255,.07); color:#e2e8f0;
+  border:1px solid rgba(255,255,255,.12); border-bottom-left-radius:5px;
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.bot .bub b { color:#fff; }
+.bot .bub code {
+  background:rgba(34,211,238,.14); color:#67e8f9; padding:1px 6px;
+  border-radius:6px; font-size:12px;
+}
+.roletag { font-size:9.5px; color:#22d3ee; font-weight:700; letter-spacing:.6px; text-transform:uppercase; margin-bottom:5px; }
+.meta { display:flex; gap:10px; align-items:center; font-size:10px; color:#64748b; padding:0 6px; }
+.user .meta { justify-content:flex-end; }
+.copybtn {
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.13);
+  color:#94a3b8; font-size:10px; padding:2px 9px; border-radius:8px;
+  cursor:pointer; transition:.2s;
+}
+.copybtn:hover { color:#22d3ee; border-color:rgba(34,211,238,.5); }
+
+.quick { display:flex; flex-wrap:wrap; gap:8px; padding:8px 22px; position:relative; z-index:1; }
+.qbtn {
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
+  color:#a5b4fc; padding:7px 14px; border-radius:20px; font-size:11.5px;
+  cursor:pointer; transition:.2s;
+}
+.qbtn:hover { background:rgba(99,102,241,.28); color:#fff; border-color:rgba(99,102,241,.55); transform:translateY(-1px); }
+
+.inputrow {
+  background:rgba(255,255,255,.05); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  padding:14px 22px 18px; border-top:1px solid rgba(255,255,255,.09);
+  display:flex; gap:10px; position:relative; z-index:5;
+}
+.inputrow input {
+  flex:1; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.13);
+  border-radius:13px; padding:13px 16px; color:#fff; font-size:14px; outline:none;
+  transition:.2s;
+}
+.inputrow input::placeholder { color:#64748b; }
+.inputrow input:focus { border-color:rgba(99,102,241,.65); box-shadow:0 0 0 3px rgba(99,102,241,.22); }
+.sendbtn {
+  background:linear-gradient(135deg,#6366f1,#22d3ee); color:#fff; border:none;
+  border-radius:13px; padding:13px 22px; font-size:14px; font-weight:700;
+  cursor:pointer; transition:.2s; box-shadow:0 6px 18px rgba(99,102,241,.4);
+}
+.sendbtn:hover { transform:translateY(-1px); box-shadow:0 10px 26px rgba(99,102,241,.55); }
+
+.typing { display:flex; gap:5px; padding:12px 16px; align-items:center; }
+.typing span {
+  width:7px; height:7px; background:#22d3ee; border-radius:50%;
+  animation:bounce 1.2s infinite; box-shadow:0 0 8px rgba(34,211,238,.8);
+}
 .typing span:nth-child(2) { animation-delay:.2s; }
 .typing span:nth-child(3) { animation-delay:.4s; }
-@keyframes bounce { 0%,80%,100%{transform:scale(.8);opacity:.5} 40%{transform:scale(1.2);opacity:1} }
-.chat::-webkit-scrollbar { width:4px; }
-.chat::-webkit-scrollbar-thumb { background:#2E86C1; border-radius:2px; }
+@keyframes bounce { 0%,80%,100% { transform:scale(.75); opacity:.45; } 40% { transform:scale(1.25); opacity:1; } }
+
+@media (max-width:600px) {
+  .header { padding:11px 14px; gap:10px; }
+  .header p { display:none; }
+  .logo { width:38px; height:38px; border-radius:11px; font-size:13px; }
+  .header h1 { font-size:15px; }
+  .chat { padding:14px; }
+  .msg { max-width:94%; }
+  .quick { padding:6px 14px; }
+  .inputrow { padding:11px 14px 14px; }
+  .sendbtn { padding:13px 16px; }
+}
 </style>
 </head>
 <body>
@@ -144,26 +264,29 @@ body { font-family:'Segoe UI',sans-serif; background:#0D1B2A; color:white; displ
     <p>AI Knowledge Assistant — Tata Steel L&D</p>
   </div>
   <div class="status">● Online</div>
-  <button class="sendbtn" onclick="clearChat()" style="margin-left:10px;">
-    🗑 Clear Chat
-</button>
+  <button class="clearbtn" onclick="clearChat()">🗑 Clear Chat</button>
 </div>
 
 <div class="chat" id="chat">
-  <div class="welcome">
+  <div class="welcome" id="welcome">
+    <div class="wicon">🤖</div>
     <h2>Welcome to TataBot</h2>
-    <p>I am your AI Knowledge Assistant for Learning and Development.
-
-    Ask me about safety, training modules, or equipment troubleshooting.</p>
+    <p>Main aapka AI Knowledge Assistant hoon — Learning &amp; Development ke liye.<br>
+    Safety, training modules ya equipment troubleshooting ke baare mein poochho!</p>
+    <div class="chips">
+      <div class="chip">🦺 Safety Procedures</div>
+      <div class="chip">📚 Training Modules</div>
+      <div class="chip">🔧 Troubleshooting</div>
+    </div>
   </div>
 </div>
 
 <div class="quick">
-  <button class="qbtn" onclick="ask('What PPE is required in furnace area?')">PPE Requirements</button>
-  <button class="qbtn" onclick="ask('I am a new operator. What should I learn first?')">New Operator Guide</button>
-  <button class="qbtn" onclick="ask('Error code E-47 on rolling mill')">Error E-47</button>
-  <button class="qbtn" onclick="ask('Show training completion status for my team')">Training Status</button>
-  <button class="qbtn" onclick="ask('What is the LOTO procedure?')">LOTO Procedure</button>
+  <button class="qbtn" onclick="ask('What PPE is required in furnace area?')">🦺 PPE Requirements</button>
+  <button class="qbtn" onclick="ask('I am a new operator. What should I learn first?')">📚 New Operator Guide</button>
+  <button class="qbtn" onclick="ask('Error code E-47 on rolling mill')">🔧 Error E-47</button>
+  <button class="qbtn" onclick="ask('Show training completion status for my team')">📊 Training Status</button>
+  <button class="qbtn" onclick="ask('What is the LOTO procedure?')">🔒 LOTO Procedure</button>
 </div>
 
 <div class="inputrow">
@@ -172,6 +295,7 @@ body { font-family:'Segoe UI',sans-serif; background:#0D1B2A; color:white; displ
 </div>
 
 <script>
+var NL = String.fromCharCode(10);
 var inp = document.getElementById('inp');
 var btn = document.getElementById('sendbtn');
 var chat = document.getElementById('chat');
@@ -180,18 +304,38 @@ var chatHistory = [];
 btn.addEventListener('click', function() { sendMsg(); });
 inp.addEventListener('keydown', function(e) { if(e.key === 'Enter') sendMsg(); });
 
-function clearChat() {
-    chatHistory = [];
-    chat.innerHTML = `
-        <div class="welcome">
-            <h2>Welcome to TataBot</h2>
-            <p>
-                I am your AI Knowledge Assistant for Learning and Development.
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
 
-                Ask me about safety, training modules, or equipment troubleshooting.
-            </p>
-        </div>
-    `;
+function md(text) {
+  var h = esc(text);
+  h = h.replace(/\\*{2}([^*]+)\\*{2}/g, '<b>$1</b>');
+  h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
+  return h.split(NL).join('<br>');
+}
+
+function nowTime() {
+  return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+
+function clearChat() {
+  chatHistory = [];
+  chat.innerHTML = '';
+  var w = document.createElement('div');
+  w.className = 'welcome';
+  w.innerHTML = '<div class="wicon">🤖</div>' +
+    '<h2>Welcome to TataBot</h2>' +
+    '<p>Main aapka AI Knowledge Assistant hoon — Learning &amp; Development ke liye.<br>' +
+    'Safety, training modules ya equipment troubleshooting ke baare mein poochho!</p>' +
+    '<div class="chips">' +
+    '<div class="chip">🦺 Safety Procedures</div>' +
+    '<div class="chip">📚 Training Modules</div>' +
+    '<div class="chip">🔧 Troubleshooting</div>' +
+    '</div>';
+  chat.appendChild(w);
 }
 
 function ask(text) {
@@ -203,6 +347,8 @@ function sendMsg() {
   var text = inp.value.trim();
   if (!text) return;
   inp.value = '';
+  var w = document.getElementById('welcome');
+  if (w) w.remove();
   addMsg(text, 'user', '');
   chatHistory.push({role: 'user', content: text});
   var tid = addTyping();
@@ -237,6 +383,9 @@ function addMsg(text, type, role) {
   av.className = 'av';
   av.textContent = type === 'user' ? 'You' : 'TB';
 
+  var wrap = document.createElement('div');
+  wrap.className = 'bubblewrap';
+
   var bub = document.createElement('div');
   bub.className = 'bub';
 
@@ -248,13 +397,33 @@ function addMsg(text, type, role) {
   }
 
   var content = document.createElement('div');
-content.style.whiteSpace = "pre-wrap";
-content.textContent = text;
-bub.appendChild(content);
+  content.innerHTML = md(text);
+  bub.appendChild(content);
+  wrap.appendChild(bub);
+
+  var meta = document.createElement('div');
+  meta.className = 'meta';
+  var t = document.createElement('span');
+  t.textContent = nowTime();
+  meta.appendChild(t);
+  if (type === 'bot') {
+    var cb = document.createElement('button');
+    cb.className = 'copybtn';
+    cb.textContent = 'Copy';
+    cb.addEventListener('click', function() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() {
+          cb.textContent = '✓ Copied';
+          setTimeout(function() { cb.textContent = 'Copy'; }, 1300);
+        });
+      }
+    });
+    meta.appendChild(cb);
+  }
+  wrap.appendChild(meta);
 
   div.appendChild(av);
-  div.appendChild(bub);
-
+  div.appendChild(wrap);
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -289,7 +458,7 @@ function removeTyping(id) {
 # ── Routes ───────────────────────────────────────────────────────
 @app.route("/")
 def home():
-    return render_template_string(HTML)
+    return HTML
 
 
 @app.route("/chat", methods=["POST"])
