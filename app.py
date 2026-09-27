@@ -3,7 +3,7 @@ from groq import Groq
 import os
 
 # ── Configuration ────────────────────────────────────────────────
-API_KEY = ""  # Your gsk_... key
+API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 app = Flask(__name__)
 client = Groq(api_key=API_KEY)
